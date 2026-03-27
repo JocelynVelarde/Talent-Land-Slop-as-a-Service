@@ -2,6 +2,11 @@ name: Label Issues and Clean Titles
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/label-issues.yml'
 
 jobs:
   label-and-clean:
