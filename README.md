@@ -1,0 +1,1 @@
+En este repositorio se subira nuestro proyecto en caso de que seamos aceptados a la etapa presencial de Talent Land 2026. Por el momento solo usaremos la seccion de issues para definir timelines detalladas.
