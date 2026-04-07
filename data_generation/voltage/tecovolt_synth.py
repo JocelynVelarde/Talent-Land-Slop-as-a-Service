@@ -22,9 +22,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-# ─── Parámetros del instrumento (medidos reales) ────────────────────────────
-FS          = 6280       # Hz — sample rate real del PicoScope
-N_SAMPLES   = 1259       # muestras por waveform
+# ─── Parámetros de lectura del Arduino Q 
+N_SAMPLES   = 200      # muestras por waveform
 NOISE_STD   = 0.00086    # V — ruido medido (std de diff)
 NOISE_P95   = 0.00172    # V — percentil 95 del ruido
 

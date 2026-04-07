@@ -57,8 +57,8 @@ split = int(len(df) * 0.8)
 train = df.iloc[:split]
 test  = df.iloc[split:]
 
-train.to_csv("./temperature/tecovolt_thermal_train.csv", index=False)
-test.to_csv("./temperature/tecovolt_thermal_test.csv",  index=False)
+train.to_csv("/home/claude/tecovolt_thermal_train.csv", index=False)
+test.to_csv("/home/claude/tecovolt_thermal_test.csv",  index=False)
 
 print(f"Agenerados:")
 print(f"   tecovolt_thermal_train.csv → {len(train)} ventanas")
