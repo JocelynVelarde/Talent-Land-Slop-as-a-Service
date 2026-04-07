@@ -1,3 +1,4 @@
 ./tecovenv
 ./teco_venv
 .venv
+*.csv
