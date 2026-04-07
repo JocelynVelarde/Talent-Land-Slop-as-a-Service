@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "type": "dsp",
+    "info": {
+        "title": "Tecovolt Preprocessing",
+        "author": "Slop as a Service",
+        "description": "Extrae features de calidad electrica de una senal de voltaje.",
+        "name": "Tecovolt Pre",
+        "cppType": "tecovolt_pre",
+        "preferConvolution": false,
+        "visualization": "dimensionalityReduction",
+        "experimental": false,
+        "latestImplementationVersion": 1,
+        "port": 4446
+    },
+    "parameters": [
+        {
+            "group": "Scaling",
+            "items": [
+                {
+                    "name": "Scale axes",
+                    "value": 1,
+                    "type": "float",
+                    "help": "Multiplies axes by this number",
+                    "param": "scale-axes"
+                }
+            ]
+        }
+    ]
+}

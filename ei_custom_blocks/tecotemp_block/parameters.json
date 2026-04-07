@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "type": "dsp",
+    "info": {
+        "title": "Custom Block",
+        "author": "Test User",
+        "description": "Custom block example",
+        "name": "Custom block",
+        "cppType": "custom_block",
+        "preferConvolution": false,
+        "visualization": "dimensionalityReduction",
+        "experimental": false,
+        "latestImplementationVersion": 1,
+        "port": 4446
+    },
+    "parameters": [
+        {
+            "group": "Scaling",
+            "items": [
+                {
+                    "name": "Scale axes",
+                    "value": 1,
+                    "type": "float",
+                    "help": "Multiplies axes by this number",
+                    "param": "scale-axes"
+                }
+            ]
+        }
+    ]
+}
