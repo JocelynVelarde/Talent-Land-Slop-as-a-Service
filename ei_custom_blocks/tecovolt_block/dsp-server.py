@@ -9,7 +9,7 @@ from urllib.parse import urlparse, parse_qs
 import traceback
 import logging
 import numpy as np
-from ei_custom_blocks.tecovolt_block.dsp import generate_features
+from dsp import generate_features
 import inspect
 
 def has_named_param(func, name: str) -> bool:

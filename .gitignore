@@ -211,3 +211,4 @@ __marimo__/
 *.csv
 .DS_Store
 **/.DS_Store
+.vscode
