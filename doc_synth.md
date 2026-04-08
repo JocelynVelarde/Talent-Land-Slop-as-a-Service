@@ -174,3 +174,65 @@ Tres clases de clasificación de carga:
 - "baja": RMS < 3
 - "media": RMS > 85
 - "alta": RMS > 170
+
+## Model Features
+
+#### Window Size: 5000 ms -> ah doc con buffer de periscope.
+
+> Trabajando con lecturas análgas converitas a amps, dado el script del .ino, recibimos 10 samples cada 6 s:
+> Freq: 6000 ms
+
+#### Window Stride: 200 ms -> sin overlap.
+
+> Dadp que la demanda cambia en real time, no hay mucho que anticipar, no necesitamos overlap. Para no aumentar lecturas innecesarias, debe ser igual al window size
+
+### Frequency:
+
+> 2 Hz por deffault de acquisiton en el thread de Zephyr.
+
+Loop
+
+```basj
+1. Samplea 1000 veces el ADC con k_usleep(100) entre cada sample
+   → 1000 × 100µs = 100ms de muestreo a 10kHz
+
+2. Calcula el RMS de esos 1000 samples
+
+3. Escribe el resultado en currentRMS con mutex (para que el loop principal
+   no lea un valor a medias)
+
+4. k_msleep(500) — duerme 500ms antes de repetir
+
+Total por ciclo: 100ms + 500ms = ~600ms → ~1.67 Hz
+```
+
+## Feature Generation
+
+Sólo calcula 3 features de interés para el classifier:
+
+- RMS: dato de rawRMS
+- average: distingue labels casi directamente.
+- std dev, inestabilidad en la window.
+
+## Training
+
+### First test
+
+Training cycles: 50
+Learning rate: 0.005
+
+Validation: 20%
+
+NNA
+
+- Input: 3 features
+- Dense1: 8 neurons
+- Dense2: 3 neurons
+
+### Accuracy: 87.5%
+
+To improve:
+
+- Media vs. Alta
+- Generar datos reales
+  con mid demmand.

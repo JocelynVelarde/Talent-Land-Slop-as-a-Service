@@ -7,7 +7,7 @@ Basado en readings reales del ACS712-30A sesión 20260408 en picoscope:
   media: rawRMS = 85.0   (estimado — un calentador, reemplazar con real)
 
 El modelo recibe una ventana de N lecturas de rawRMS a 0.5Hz
-(el thread Zephyr actualiza cada ~600ms).
+(el thread Zephyr actualiza cada ~600ms).GIT
 
 Clases → thresholds reales del sketch:
   baja  : rawRMS < 3.0
