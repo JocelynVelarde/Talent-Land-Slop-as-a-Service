@@ -212,3 +212,6 @@ __marimo__/
 .DS_Store
 **/.DS_Store
 .vscode
+
+containers/uno_deploy/edge-impulse-sdk
+containers/.git
