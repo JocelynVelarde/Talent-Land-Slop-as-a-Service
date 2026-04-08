@@ -27,6 +27,8 @@ N_AUG       = 50        # variaciones sinteticas por captura real
 OUTPUT_DIR  = "./edge_impulse_output"
 ```
 
+# Voltage Anomaly Detection
+
 ## Tipo de modelo
 
 Classifier:
@@ -115,7 +117,7 @@ Accuracy: 94.5%
 
 Un master csv con labels para classifier clásico.
 
-## Temp Anomaly Detection
+# Temp Anomaly Detection
 
 > Usa datos del BMP280 para clasificar la integrdad del tablero energético. Clasifica riesgo: bajo, alto, medio.
 
@@ -145,3 +147,30 @@ Observando en un picoscope + osciloscopio, la variación era de +- 0.200 V.
 
 Sensor de voltaje.
 Debe ajustarse con el POT hasta que la señal senoidal esté centrada y no achatada.
+
+# Demanda energética
+
+## Tipo de modelo
+
+Classification.
+Identifica el nivel de carga dependiendo del tipo de dispositivo conectado.
+Example:
+
+- sin carga: RMS -> 0
+- con 1 calentador: RMS -> +- 85
+- con 2 calentadores: RMS -> +- 170
+
+## Data Input
+
+Features del MCU:
+
+- rawRMS (float): ADC counts.
+- currentRMS (float): Amps (variable por tipo de sensor y calibre del circuito).
+
+## Expected output
+
+Tres clases de clasificación de carga:
+
+- "baja": RMS < 3
+- "media": RMS > 85
+- "alta": RMS > 170
