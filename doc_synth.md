@@ -67,6 +67,36 @@ Las 5 features de Tecovolt Pre ya tienen significado físico en sus unidades rea
 
 Si normalizamos, el modelo **pierde** la referencia absoluta de RMS que es crítica para distinguir sag/swell/outage —un outage a 2mV RMS y un normal a 117mV RMS son mUY diferentes en escala real, pero normalizados se acercan.
 
+### First Training
+
+#### Unoptimized: float32
+
+     En optimized no hay buenos results, pero no nos preocupa porque el Qualcomm AI hub hace la quantification.
+     Esa data en INT8 va a la STM32.
+
+Accuracy: 92.6%
+
+### Ideas de Improvement:
+
+     sag_leve (13.6% confusion) y swell→normal (7.4%)
+
+1.  Subir training cycles de 50 a 100.
+
+2.  Si no jala -> más datos en normal y sag_leve.
+
+        sus datos de Rms se traslapan en bordes.
+        CORRER again tecovolt_synth.py con --n 400
+
+3.  Añadir un Flatten
+
+### Second Training
+
+Accuracy: 94.5%
+
+### Ideas de Improvement:
+
+1. Mejorar el dataset con datos de voltaje raw real desde el Arduino Q.
+
 ### Main functions:
 
 #### compute_features
@@ -95,3 +125,23 @@ Flatten:
 Es ideal, ya que, aunque recibamos datos a 1 Hz, la temperatura cambia lento. No es necesario sobrecargar el flujo de recibimiento de la Arduino Q.
 
 _Usa temperatura y humedad del BMP280 a 1 Hz para clasificar el riesgo térmico del tablero en tres niveles. Elegimos Flatten como bloque de procesamiento porque el calor es un fenómeno lento, así que no necesita análisis de frecuencia. Lo entrenamos con datos sintéticos generados a partir de rangos documentados para tableros residenciales mexicanos."_
+
+## Data Acquisition ACS 712
+
+Sensor de corriente - 30 A
+Demasiada potencia para poder notar una fluctuación grande.
+
+Observando en un picoscope + osciloscopio, la variación era de +- 0.200 V.
+
+### Keys para que esto funcione
+
+1. Circuito en serie (obviamente), con el sensor ANTES de la corriente a medir.
+
+2. Consumo mayor a 100 Watts
+
+3. Generar flicker con dremmel.
+
+### Data Acquisition TM101B
+
+Sensor de voltaje.
+Debe ajustarse con el POT hasta que la señal senoidal esté centrada y no achatada.
