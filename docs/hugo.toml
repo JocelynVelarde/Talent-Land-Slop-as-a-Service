@@ -1,0 +1,98 @@
+baseURL = "https://JocelynVelarde.github.io/Talent-Land-Slop-as-a-Service/"
+title = "Tecovolt"
+description = "Nodo inteligente que protege tu hogar antes de que llegue el apagón"
+
+# Language settings
+contentDir = "content/en"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+
+enableRobotsTXT = true
+enableGitInfo = false
+
+# Hugo module config
+[module]
+  proxy = "direct"
+  [module.hugoVersion]
+    extended = true
+    min = "0.110.0"
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false
+
+# Markup settings
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.parser.attribute]
+      block = true
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "dracula"
+
+# Image processing
+[imaging]
+  resampleFilter = "CatmullRom"
+  quality = 75
+  anchor = "smart"
+
+[services]
+  [services.googleAnalytics]
+    # id = "UA-00000000-0"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[params]
+  copyright = "Slop as a Service (SAAS) — Tecovolt"
+  privacy_policy = ""
+  version_menu = "Releases"
+  archived_version = false
+  version = "0.1"
+  url_latest_version = ""
+  github_repo = "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
+  github_project_repo = "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
+  github_branch = "uno-q-sensors"
+
+  # UI configuration
+  [params.ui]
+    breadcrumb_disable = false
+    footer_about_disable = false
+    navbar_logo = true
+    navbar_translucent_over_cover_disable = false
+    sidebar_menu_compact = true
+    sidebar_menu_foldable = true
+    sidebar_search_disable = false
+    ul_show = 1
+
+  [params.ui.feedback]
+    enable = false
+
+  [params.ui.readingtime]
+    enable = true
+
+  [params.links]
+    [[params.links.developer]]
+      name = "GitHub"
+      url = "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
+      icon = "fab fa-github"
+      desc = "Project repository"
+
+[menu]
+  [[menu.main]]
+    name = "Docs"
+    weight = 10
+    url = "/docs/"
+  [[menu.main]]
+    name = "Blog"
+    weight = 20
+    url = "/blog/"
+  [[menu.main]]
+    name = "GitHub"
+    weight = 30
+    url = "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
+    pre = "<i class='fab fa-github'></i>"

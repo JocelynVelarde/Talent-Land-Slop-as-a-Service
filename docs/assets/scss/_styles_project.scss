@@ -1,0 +1,29 @@
+// Custom Tecovolt styles
+
+.td-cover-block {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+}
+
+.td-navbar {
+  background: #1a1a2e !important;
+}
+
+.td-sidebar-nav .td-sidebar-link.active {
+  border-left-color: #e94560;
+}
+
+// Feature cards on landing page
+.td-box--primary {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+}
+
+// Code block styling
+pre {
+  border-left: 3px solid #e94560;
+}
+
+// Alert boxes
+.alert-primary {
+  border-left: 4px solid #e94560;
+  background: rgba(233, 69, 96, 0.05);
+}
