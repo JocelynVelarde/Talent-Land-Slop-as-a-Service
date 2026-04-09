@@ -1,14 +1,21 @@
 ---
-title: "Arquitectura Técnica"
-linkTitle: "Arquitectura"
-weight: 3
-description: >
-  Diseño dual MCU + MPU, pipeline de datos, stack de software y flujo de operación del sistema Tecovolt.
+title: Arquitectura Técnica
+nav_order: 4
 ---
 
-## Visión general
+# Arquitectura Técnica
+{: .fs-8 }
 
-Tecovolt es técnicamente complejo por una razón central: **un sistema de protección eléctrica no puede depender de la nube ni tolerar latencias de red.** Cada decisión de diseño parte de ese principio. El dispositivo se instala junto al tablero eléctrico del hogar y opera de forma completamente autónoma, incluso cuando el internet cae junto con la luz.
+Diseño dual MCU + MPU, pipeline de datos, stack de software y flujo de operación.
+{: .fs-5 .fw-300 }
+
+---
+
+## Principio de diseño
+
+Un sistema de protección eléctrica **no puede depender de la nube ni tolerar latencias de red.** Cada decisión de diseño parte de ese principio. El dispositivo se instala junto al tablero eléctrico del hogar y opera de forma completamente autónoma, incluso cuando el internet cae junto con la luz.
+
+---
 
 ## Arquitectura dual MCU + MPU
 
@@ -32,17 +39,22 @@ El microprocesador gestiona todo lo que requiere sistema operativo:
 - Dashboard **Flask** + alertas **Twilio WhatsApp**
 - OTA model updates vía **Foundries.io**
 
+{: .note }
 > Esta separación garantiza que, pase lo que pase en la red, **la respuesta física nunca se bloquee.**
+
+---
 
 ## Stack de software e IA
 
 | Herramienta | Propósito |
-|-------------|-----------|
+|:------------|:----------|
 | **Edge Impulse Studio** | Entrenamiento de los 3 modelos. Custom DSP blocks (`tecovolt_block`, `tecotemp_block`) en Python vía Docker |
 | **Qualcomm AI Hub** | Cuantización INT8 y perfilado energético. Reducción de ~200 KB a ~50 KB por modelo |
 | **Arduino App Lab + Foundries.io** | Entorno oficial de desarrollo para Uno Q. OTA updates en campo |
 | **Flask + SQLite** | Dashboard web histórico en el MPU. Logger de eventos a 1 Hz |
 | **Twilio WhatsApp API** | Canal de alertas bidireccional. Notificaciones de riesgo + comandos de relay |
+
+---
 
 ## Flujo de operación
 
@@ -57,8 +69,7 @@ El microprocesador gestiona todo lo que requiere sistema operativo:
 │ · Export C++/Py │    │   potencia       │    │ · Entorno Uno Q     │
 └─────────────────┘    │ · Validación en  │    └──────────┬──────────┘
                        │   Dragonwing     │               │
-                       └──────────────────┘               │
-                                                          ▼
+                       └──────────────────┘               ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
 │ 5. Notificación │    │ 4. Actualización │    │   Nodo desplegado   │
 │ Twilio WhatsApp │◀───│ Foundries.io OTA │◀───│                     │
@@ -70,13 +81,17 @@ El microprocesador gestiona todo lo que requiere sistema operativo:
                        └──────────────────┘
 ```
 
+---
+
 ## Seguridad y robustez
 
 | Especificación | Detalle |
-|---------------|---------|
+|:--------------|:--------|
 | **Grado IP55** | Caja sellada apta para instalación exterior junto al tablero eléctrico |
 | **127V aislados** | Zona de alto voltaje físicamente separada del procesador mediante transformadores y optoacopladores |
 | **Enclosure CAD** | Diseñado con todos los componentes posicionados, listo para impresión 3D |
+
+---
 
 ## Comunicación serial MCU ↔ MPU
 
