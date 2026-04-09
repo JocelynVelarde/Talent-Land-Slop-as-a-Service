@@ -6,7 +6,6 @@ hugo_stats.json
 
 # Node
 node_modules/
-package-lock.json
 
 # Go
 go.sum
