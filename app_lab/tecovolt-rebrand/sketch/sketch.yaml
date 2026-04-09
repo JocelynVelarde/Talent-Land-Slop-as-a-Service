@@ -1,0 +1,18 @@
+profiles:
+  default:
+    fqbn: 
+    platforms:
+      - platform: arduino:zephyr
+    libraries:
+      - Arduino_RouterBridge (0.3.0)
+      - dependency: Arduino_RPClite (0.2.1)
+      - dependency: ArxContainer (0.7.0)
+      - dependency: ArxTypeTraits (0.3.2)
+      - dependency: DebugLog (0.8.4)
+      - dependency: MsgPack (0.4.2)
+      - Adafruit BMP280 Library (3.0.0)
+      - dependency: Adafruit BusIO (1.17.4)
+      - dependency: Adafruit Unified Sensor (1.1.15)
+      - Adafruit BMP085 Unified (1.1.3)
+
+default_profile: default

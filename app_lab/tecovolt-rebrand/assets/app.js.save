@@ -1,0 +1,88 @@
+const POLL_INTERVAL = 1000;
+const MAX_LOG_LINES = 50;
+let lastState = null;
+
+const els = {
+  connectionDot:     document.getElementById("connectionDot"),
+  connectionText:    document.getElementById("connectionText"),
+  statusCard:        document.getElementById("statusCard"),
+  statusIcon:        document.getElementById("statusIcon"),
+  statusName:        document.getElementById("statusName"),
+  statusConfidence:  document.getElementById("statusConfidence"),
+  voltageValue:      document.getElementById("voltageValue"),
+  voltageBar:        document.getElementById("voltageBar"),
+  currentValue:      document.getElementById("currentValue"),
+  currentBar:        document.getElementById("currentBar"),
+  tempValue:         document.getElementById("tempValue"),
+  tempBar:           document.getElementById("tempBar"),
+  voltageAnomaly:    document.getElementById("voltageAnomaly"),
+  voltageAnomalyConf:document.getElementById("voltageAnomalyConf"),
+  tempRisk:          document.getElementById("tempRisk"),
+  tempRiskConf:      document.getElementById("tempRiskConf"),
+  terminalBody:      document.getElementById("terminalBody"),
+};
+
+const STATE_ICONS = { alta: "🔴", media: "🟡", baja: "🟢" };
+
+function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+function timeNow() {
+  return new Date().toLocaleTimeString("es-MX", { hour12: false });
+}
+
+function addLog(msg, cls) {
+  const line = document.createElement("div");
+  line.className = "log-line" + (cls ? " " + cls : "");
+  line.innerHTML = `<span class="log-time">${timeNow()}</span> ${msg}`;
+  els.terminalBody.appendChild(line);
+  while (els.terminalBody.children.length > MAX_LOG_LINES)
+    els.terminalBody.removeChild(els.terminalBody.firstChild);
+  els.terminalBody.scrollTop = els.terminalBody.scrollHeight;
+}
+
+function clearLog() {
+  els.terminalBody.innerHTML = "";
+  addLog("Log limpiado");
+}
+window.clearLog = clearLog;
+
+function updateUI(data) {
+  els.connectionDot.className = "status-dot connected";
+  els.connectionText.textContent = "Conectado";
+
+  const voltage = data.voltage ?? 0;
+  const current = data.current ?? 0;
+  const temp    = data.temperature ?? 0;
+  const state   = data.demand_state ?? "---";
+  const conf    = data.demand_confidence ?? 0;
+
+  els.voltageValue.textContent = voltage.toFixed(1);
+  els.voltageBar.style.width   = clamp(voltage / 140 * 100, 0, 100) + "%";
+  els.currentValue.textContent = current.toFixed(2);
+  els.currentBar.style.width   = clamp(current / 30 * 100, 0, 100) + "%";
+  els.tempValue.textContent    = temp.toFixed(1);
+  els.tempBar.style.width      = clamp(temp / 80 * 100, 0, 100) + "%";
+
+  els.statusIcon.textContent       = STATE_ICONS[state] ?? "⚪";
+  els.statusName.textContent       = state.toUpperCase();
+  els.statusConfidence.textContent = (conf * 100).toFixed(0) + "% confianza";
+
+  els.statusCard.className = "card card-status";
+  if (["baja", "media", "alta"].includes(state))
+    els.statusCard.classList.add(state);
+
+  if (state !== lastState && state !== "---") {
+    addLog(
+      `${STATE_ICONS[state] ?? "⚪"} Demanda: <strong>${state.toUpperCase()}</strong> (${(conf * 100).toFixed(0)}%) ${current.toFixed(2)}A`,
+      state
+    );
+    lastState = state;
+  }
+}
+
+async function poll() {
+  try {
+    const res = await fetch("/status");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    updateUI

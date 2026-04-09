@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tecovolt Monitor</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">⚡</div>
+        <div>
+          <h1>TECOVOLT</h1>
+          <span class="subtitle">Monitor de Red Eléctrica</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-dot" id="connectionDot"></div>
+        <span class="status-text" id="connectionText">Conectando...</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card card-status" id="statusCard">
+        <div class="card-label">ESTADO DEMANDA</div>
+        <div class="status-icon" id="statusIcon">⚪</div>
+        <div class="status-name" id="statusName">---</div>
+        <div class="status-confidence" id="statusConfidence">--% confianza</div>
+      </div>
+      <div class="card card-relay" id="relayCard">
+        <div class="card-label">RELAY</div>
+  	<div class="relay-status" id="relayStatus">OFF</div>
+  	<button class="relay-btn" id="relayBtn" onclick="resetRelay()">RESET</button>
+	</div>
+      <div class="card">
+        <div class="card-label">VOLTAJE RMS</div>
+        <div class="card-value" id="voltageValue">---</div>
+        <div class="card-unit">V</div>
+        <div class="card-bar">
+          <div class="bar-fill bar-voltage" id="voltageBar"></div>
+        </div>
+        <div class="card-range">0 — 140V</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">CORRIENTE RMS</div>
+        <div class="card-value" id="currentValue">---</div>
+        <div class="card-unit">A</div>
+        <div class="card-bar">
+          <div class="bar-fill bar-current" id="currentBar"></div>
+        </div>
+        <div class="card-range">0 — 30A</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">TEMPERATURA</div>
+        <div class="card-value" id="tempValue">---</div>
+        <div class="card-unit">°C</div>
+        <div class="card-bar">
+          <div class="bar-fill bar-temp" id="tempBar"></div>
+        </div>
+        <div class="card-range">0 — 80°C</div>
+      </div>
+
+      <div class="card card-model">
+        <div class="card-label">ANOMALÍA VOLTAJE</div>
+        <div class="model-result" id="voltageAnomaly">normal</div>
+        <div class="model-conf" id="voltageAnomalyConf">---%</div>
+      </div>
+
+      <div class="card card-model">
+        <div class="card-label">RIESGO TÉRMICO</div>
+        <div class="model-result" id="tempRisk">bajo</div>
+        <div class="model-conf" id="tempRiskConf">---%</div>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="terminal-title">▸ LOG</span>
+        <button class="terminal-clear" onclick="clearLog()">Limpiar</button>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="log-line"><span class="log-time">--:--:--</span> Esperando datos...</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      SAAS — Slop as a Service · Talent Land 2026 · Qualcomm Sustainable Power Cities
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
