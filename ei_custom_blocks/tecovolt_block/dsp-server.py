@@ -39,7 +39,7 @@ def single_req(self, fn, body):
     }
 
     for param_key in body['params'].keys():
-        args[param_key] = body['params'][param_key]
+        args[param_key.replace('-', '_')] = body['params'][param_key]
 
     processed = fn(**args)
     if (isinstance(processed['features'], np.ndarray)):
@@ -75,7 +75,7 @@ def batch_req(self, fn, body):
             state = body['state']
 
     for param_key in body['params'].keys():
-        base_args[param_key] = body['params'][param_key]
+        base_args[param_key.replace('-', '_')] = body['params'][param_key]
 
     total = 0
     features = []

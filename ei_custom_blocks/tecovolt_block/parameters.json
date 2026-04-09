@@ -10,7 +10,7 @@
         "preferConvolution": false,
         "visualization": "dimensionalityReduction",
         "experimental": false,
-        "latestImplementationVersion": 1,
+        "latestImplementationVersion": 2,
         "port": 4446
     },
     "parameters": [
