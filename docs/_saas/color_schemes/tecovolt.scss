@@ -1,25 +1,23 @@
 // Tecovolt · Qualcomm-inspired color scheme
-// Base: GitHub dark blue-gray + Qualcomm red-magenta accent
-// Fondo: azul marino profundo (no negro puro)
-// Accent: rojo Qualcomm (#E20074) + cyan eléctrico para links
+// Just the Docs v0.10.1 compatible — todo en un solo archivo
 
 // ── Backgrounds ──────────────────────────────────────────────
-$body-background-color: #0d1117;        // GitHub dark — azul-negro
-$sidebar-color: #10181f;                // Sidebar levemente más frío
-$code-background-color: #161b22;        // GitHub code block
-$border-color: #21262d;                 // Bordes sutiles
+$body-background-color: #0d1117;
+$sidebar-color: #10181f;
+$code-background-color: #161b22;
+$border-color: #21262d;
 
 // ── Texto ────────────────────────────────────────────────────
-$body-text-color: #c9d1d9;             // GitHub dark text — no blanco puro
-$body-heading-color: #e6edf3;          // Headings más brillantes
-$nav-child-link-color: #8b949e;        // Nav links secundarios
+$body-text-color: #c9d1d9;
+$body-heading-color: #e6edf3;
+$nav-child-link-color: #8b949e;
 $search-result-preview-color: #8b949e;
 
 // ── Links ────────────────────────────────────────────────────
-$link-color: #58a6ff;                  // GitHub blue — familiar y legible
-$btn-primary-color: #e20074;           // Qualcomm red-magenta
+$link-color: #58a6ff;
+$btn-primary-color: #e20074;
 
-// ── Accent / Highlight ───────────────────────────────────────
+// ── Feedback/accent ──────────────────────────────────────────
 $feedback-color: darken(#e20074, 5%);
 
 // ── Tables ───────────────────────────────────────────────────
@@ -29,6 +27,6 @@ $search-background-color: #161b22;
 // ── Code ─────────────────────────────────────────────────────
 $code-linenumber-color: #6e7681;
 
-// ── Base font ────────────────────────────────────────────────
+// ── Fonts ────────────────────────────────────────────────────
 $body-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
 $mono-font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;

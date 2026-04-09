@@ -1,0 +1,86 @@
+---
+---
+// docs/assets/css/just-the-docs-custom.scss
+// Just the Docs v0.10.1 lo carga automáticamente si existe este archivo.
+// No requiere declaración en _config.yml.
+
+// ── Nav — active link en magenta Qualcomm ────────────────────
+.nav-list .nav-list-item .nav-list-link.active {
+  color: #e20074 !important;
+  font-weight: 600;
+}
+
+.nav-list .nav-list-item .nav-list-link:hover {
+  color: #58a6ff;
+  background-color: rgba(88, 166, 255, 0.08);
+}
+
+// ── Botón primario — rojo Qualcomm ───────────────────────────
+.btn-primary {
+  background-color: #e20074 !important;
+  border-color: #e20074 !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  background-color: #b8005d !important;
+  border-color: #b8005d !important;
+}
+
+// ── Headings con separador sutil ─────────────────────────────
+h1, h2 {
+  border-bottom: 1px solid #21262d;
+  padding-bottom: 0.3em;
+}
+
+// ── Blockquotes — borde magenta (el tagline principal) ───────
+blockquote {
+  border-left: 4px solid #e20074;
+  color: #c9d1d9;
+  background-color: rgba(226, 0, 116, 0.06);
+  padding: 0.8em 1.2em;
+  border-radius: 0 4px 4px 0;
+}
+
+// ── Código inline ─────────────────────────────────────────────
+code {
+  color: #ff7bb0;
+  background-color: #161b22;
+  border: 1px solid #21262d;
+}
+
+// ── Tablas ───────────────────────────────────────────────────
+table thead {
+  background-color: rgba(226, 0, 116, 0.12);
+}
+
+table thead th {
+  color: #e6edf3;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #161b22;
+}
+
+// ── Imágenes — sombra para que floten ────────────────────────
+img {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+// ── Site title hover ─────────────────────────────────────────
+.site-title:hover {
+  color: #e20074 !important;
+}
+
+// ── Footer ───────────────────────────────────────────────────
+.site-footer {
+  border-top: 1px solid #21262d;
+  color: #6e7681;
+  font-size: 0.8rem;
+}
+
+// ── Search focus ─────────────────────────────────────────────
+.search-input:focus {
+  border-color: #e20074;
+  box-shadow: 0 0 0 3px rgba(226, 0, 116, 0.15);
+}

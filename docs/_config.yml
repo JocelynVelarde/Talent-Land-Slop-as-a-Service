@@ -7,9 +7,6 @@ baseurl: "/Talent-Land-Slop-as-a-Service"
 
 color_scheme: tecovolt
 
-custom_scss:
-  - "_sass/custom/custom.scss"
-
 aux_links:
   "GitHub":
     - "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
