@@ -1,0 +1,34 @@
+title: Tecovolt
+description: Un nodo inteligente que protege tu hogar antes de que llegue el apagón — Qualcomm Sustainable Power Cities · Talent Land 2025
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+
+url: "https://JocelynVelarde.github.io"
+baseurl: "/Talent-Land-Slop-as-a-Service"
+
+color_scheme: dark
+
+aux_links:
+  "GitHub":
+    - "https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service"
+
+aux_links_new_tab: true
+
+heading_anchors: true
+
+nav_enabled: true
+
+back_to_top: true
+back_to_top_text: "Subir"
+
+footer_content: '<b>Slop as a Service (SAAS)</b> — Tecovolt · Qualcomm Sustainable Power Cities · Talent Land 2025<br>Bini Vázquez · Diego Pérez Rossi · Jocelyn Velarde Barrón · Armando Mac Beath'
+
+callouts:
+  warning:
+    title: Pendiente
+    color: yellow
+  info:
+    title: Nota
+    color: blue
+  progress:
+    title: En curso
+    color: green
