@@ -1,107 +1,131 @@
 ---
-title: Nuestro Journey
-nav_order: 9
+title: Arquitectura Técnica
+nav_order: 10
 ---
 
-# Nuestro Journey
+# Arquitectura Técnica
+
 {: .fs-8 }
 
-El camino del equipo SAAS durante el hackathon: hitos, progreso y próximos pasos.
+Diseño dual MCU + MPU, pipeline de datos, stack de software y flujo de operación.
 {: .fs-5 .fw-300 }
 
 ---
 
-## ✅ Hitos completados
+## Principio de diseño
 
-### Arquitectura y diseño
-- Definición de arquitectura MCU/MPU y separación deliberada de responsabilidades
-- Diseño CAD del enclosure con todos los componentes posicionados — listo para impresión 3D
-
-### Pipeline de datos e IA
-- Pipeline de datos sintéticos: `tecovolt_synth.py`, `tecovolt_pipeline.py`, `tecovolt_temp_synth.py`, `tecovolt_demand_synth.py`
-- Custom DSP blocks en Edge Impulse: `tecovolt_block` (voltaje) y `tecotemp_block` (temperatura)
-- 1er entrenamiento Modelo A — accuracy 92.6%
-- **2do entrenamiento Modelo A — accuracy 94.5%**
-- 1er entrenamiento Modelo C — accuracy 87.5%
-
-### Software e integración
-- Configuración de Twilio WhatsApp API en el MPU
-- Repositorio en GitHub con backlog de issues etiquetados
-- GitHub Actions para gestión automática de labels
-
-### Validación
-- Campaña de validación de mercado en Facebook — encuesta con usuarios reales
+Un sistema de protección eléctrica **no puede depender de la nube ni tolerar latencias de red.** Cada decisión de diseño parte de ese principio. El dispositivo se instala junto al tablero eléctrico del hogar y opera de forma completamente autónoma, incluso cuando el internet cae junto con la luz.
 
 ---
 
-## 🔄 En curso
+## Arquitectura dual MCU + MPU
 
-- Recopilación de datos reales de corriente con ACS712
-- Deployment de modelos cuantizados INT8 en el STM32U585
-- Aterrizaje del pitch final para jurado Qualcomm
-- Debugging de almacenamiento no identificado en el sistema
+La decisión de diseño más importante es la **separación deliberada de responsabilidades** entre los dos procesadores del Arduino Uno Q:
 
----
+### MCU · STM32U585 (C/C++ / Zephyr RTOS)
 
-## ⬜ Pendiente
+El microcontrolador se dedica exclusivamente a tareas de tiempo real:
 
-- Reentrenamiento de los 3 modelos con datos reales del hardware
-- Integración completa MCU ↔ MPU vía UART serial
-- Dashboard Flask funcional en el MPU
-- Logger SQLite de eventos históricos
-- Pruebas end-to-end (sensor → modelo → relay → WhatsApp)
-- Optimización de modelos vía Qualcomm AI Hub con datos reales
-- Impresión 3D del enclosure
-- Documentación final para entrega
+- Muestreo ADC a **1 kHz** (ZMPT101B) y **~2 Hz** (ACS712, thread Zephyr con mutex)
+- Inferencia de **3 modelos en paralelo**
+- Activación del relay físico **< 1ms**
+- Sin red, sin logs, sin OS — latencia cero
 
----
+### MPU · QRB2210 (Python / Linux)
 
-## Gestión del proyecto
+El microprocesador gestiona todo lo que requiere sistema operativo:
 
-El proyecto se gestiona con GitHub Projects:
+- **Lógica de predicción compuesta:** acumula historial de las últimas 10 clasificaciones del MCU y evalúa patrones antes de actuar
+- Logger **SQLite** de eventos históricos
+- Dashboard **Flask** + alertas **Twilio WhatsApp**
+- OTA model updates vía **Foundries.io**
 
-| Columna | Descripción |
-|:--------|:------------|
-| **Backlog** | Issues pendientes de iniciar |
-| **Ready** | Listos para trabajar |
-| **In progress** | Trabajo activo |
-| **In review** | En revisión |
-| **Done** | Completados |
+{: .note }
 
-### Labels de issues
-
-| Label | Área |
-|:------|:-----|
-| `hardware` | Ensamblaje físico, circuitos, enclosure |
-| `firmware` | Código MCU (C/C++), Zephyr RTOS |
-| `software` | Código MPU (Python), Flask, SQLite |
-| `edge-ai` | Modelos, Edge Impulse, Qualcomm AI Hub |
-| `integración` | Pruebas end-to-end, comunicación MCU ↔ MPU |
+> Esta separación garantiza que, pase lo que pase en la red, **la respuesta física nunca se bloquee.** Un crash en el MPU no afecta la capacidad del MCU de activar el relay.
 
 ---
 
-## Línea de tiempo
+## Lógica de predicción compuesta (MPU)
 
-### Semana 1 — Ideación
-- Investigación del problema energético en México
-- Diseño de arquitectura técnica
-- Primer pipeline de datos sintéticos
-- Entrega de documento de ideación
+El relay no actúa en una sola detección. El MPU evalúa patrones acumulados:
 
-### Semana 2 — Desarrollo
-- Custom DSP blocks en Edge Impulse
-- Entrenamiento de modelos A, B, C
-- Configuración de hardware (sensores + relay)
-- Setup de Twilio WhatsApp
-- Diseño CAD del enclosure
+```python
+history = deque(maxlen=10)
 
-### Semana 3 — Integración (Talent Land)
-- Deployment de modelos en Arduino Uno Q
-- Captura de datos reales
-- Integración MCU ↔ MPU
-- Pruebas end-to-end
-- Demo para jurado Qualcomm
+if history.count('sag_leve') >= 3:   → alerta_amarilla (WhatsApp)
+if history.count('sag_severo') >= 2: → alerta_roja → relay_off
+```
+
+Esto diferencia Tecovolt de un monitor pasivo: actúa de forma **predictiva** — desconecta cargas no críticas para proteger el transformador local antes del colapso total.
 
 ---
 
-[Ver el repositorio completo en GitHub →](https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service){: .btn .btn-primary }
+## Stack de software e IA
+
+| Herramienta                        | Propósito                                                                                                              |
+| :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Edge Impulse Studio**            | Entrenamiento de los 3 modelos. Custom DSP blocks (`tecovolt_block` con THD, `tecotemp_block`) vía Python/ngrok/Docker |
+| **Qualcomm AI Hub**                | Cuantización INT8 y perfilado energético. Reducción de ~200 KB a ~50 KB por modelo                                     |
+| **Arduino App Lab + Foundries.io** | Entorno oficial de desarrollo para Uno Q. OTA updates en campo                                                         |
+| **Flask + SQLite**                 | Dashboard web histórico en el MPU. Logger de eventos                                                                   |
+| **Twilio WhatsApp API**            | Canal de alertas bidireccional. Notificaciones de riesgo + comandos de relay                                           |
+
+---
+
+## Flujo de operación
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
+│ 1. Entrenamiento│    │ 2. Optimización  │    │ 3. Desarrollo y     │
+│ Edge Impulse    │───▶│ Qualcomm AI Hub  │───▶│    Deploy           │
+│ Studio          │    │                  │    │ Arduino App Lab     │
+│                 │    │ · Cuantización   │    │                     │
+│ · 3 modelos     │    │   INT8           │    │ · C/C++ en MCU      │
+│ · Custom DSP    │    │ · Perfilado de   │    │ · Python en MPU     │
+│ · 99.3% acc.    │    │   potencia       │    │ · Entorno Uno Q     │
+└─────────────────┘    │ · Validación en  │    └──────────┬──────────┘
+                       │   Dragonwing     │               │
+                       └──────────────────┘               ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
+│ 5. Notificación │    │ 4. Actualización │    │   Nodo desplegado   │
+│ Twilio WhatsApp │◀───│ Foundries.io OTA │◀───│                     │
+│                 │    │                  │    │ Evento de riesgo ──▶│
+│ · Alertas       │    │ · Remota         │    │ Comando usuario ◀──│
+│ · Comandos      │    │ · Gestión de     │    │                     │
+│ · Control relay │    │   modelos        │    └─────────────────────┘
+└─────────────────┘    │ · Escalabilidad  │
+                       └──────────────────┘
+```
+
+---
+
+## Seguridad y robustez
+
+| Especificación    | Detalle                                                                                             |
+| :---------------- | :-------------------------------------------------------------------------------------------------- |
+| **Grado IP55**    | Caja sellada apta para instalación exterior junto al tablero eléctrico                              |
+| **127V aislados** | Zona de alto voltaje físicamente separada del procesador mediante transformadores y optoacopladores |
+| **Enclosure CAD** | Diseñado con todos los componentes posicionados, listo para impresión 3D                            |
+
+---
+
+## Comunicación serial MCU ↔ MPU
+
+La comunicación entre procesadores ocurre vía **UART serial / Arduino_RouterBridge.h** con un protocolo JSON ligero. El MCU usa `Bridge.provide()` para exponer funciones al MPU. Fix aplicado: lectura carácter a carácter para manejar `\r\n` o `\r` (comportamiento del RouterBridge en Arduino App Lab).
+
+El patrón de concurrencia en el MCU usa mutex Zephyr para lecturas de sensor en thread dedicado:
+
+```c
+K_MUTEX_DEFINE(current_mutex);
+
+void current_thread_fn(void*, void*, void*) {
+    while(1) {
+        // samplea 1000 veces @ 10kHz, calcula RMS
+        k_mutex_lock(&current_mutex, K_FOREVER);
+        currentRMS = amps;
+        k_mutex_unlock(&current_mutex);
+        k_msleep(500);
+    }
+}
+```

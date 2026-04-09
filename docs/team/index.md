@@ -1,9 +1,10 @@
 ---
 title: El Equipo
-nav_order: 10
+nav_order: 11
 ---
 
 # El Equipo
+
 {: .fs-8 }
 
 Slop as a Service (SAAS) — Tecnológico de Monterrey
@@ -14,15 +15,19 @@ Slop as a Service (SAAS) — Tecnológico de Monterrey
 ## Miembros
 
 ### Bini Vázquez
+
 <!-- TODO: Add role and bio -->
 
 ### Diego Pérez Rossi
+
 <!-- TODO: Add role and bio -->
 
 ### Jocelyn Velarde Barrón
+
 <!-- TODO: Add role and bio -->
 
 ### Armando Mac Beath
+
 <!-- TODO: Add role and bio -->
 
 ---

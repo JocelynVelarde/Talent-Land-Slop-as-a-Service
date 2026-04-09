@@ -1,9 +1,10 @@
 ---
 title: Blog
-nav_order: 11
+nav_order: 12
 ---
 
 # Blog
+
 {: .fs-8 }
 
 Actualizaciones y reflexiones del equipo durante el desarrollo de Tecovolt.
@@ -12,6 +13,7 @@ Actualizaciones y reflexiones del equipo durante el desarrollo de Tecovolt.
 ---
 
 ## Por qué construimos Tecovolt
+
 **Abril 2025**
 
 Cuando CENACE declaró en alerta al Sistema Eléctrico Nacional por tercer día consecutivo en mayo de 2024, no fue una noticia abstracta para nosotros. Fue el momento en que el taller de la familia dejó de funcionar, cuando el refrigerador del negocio de la esquina perdió toda su mercancía, cuando los equipos médicos domiciliarios se apagaron sin aviso.
@@ -27,6 +29,7 @@ Sense Energy y Emporia Vue son productos excelentes para el mercado norteamerica
 ### La apuesta técnica
 
 Decidimos construir un sistema que:
+
 1. **Opera sin internet** — toda la inferencia on-device
 2. **Actúa físicamente** — relay que protege antes del colapso
 3. **Aprende continuamente** — OTA updates vía Foundries.io
@@ -38,4 +41,4 @@ Estamos en Talent Land construyendo el prototipo funcional. Cada dato que captur
 
 ---
 
-*Más actualizaciones próximamente...*
+_Más actualizaciones próximamente..._
