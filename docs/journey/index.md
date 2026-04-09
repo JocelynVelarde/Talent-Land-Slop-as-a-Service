@@ -31,6 +31,12 @@ El microcontrolador se dedica exclusivamente a tareas de tiempo real:
 - Activación del relay físico **< 1ms**
 - Sin red, sin logs, sin OS — latencia cero
 
+<img src="../assets/images/signals/signal_normal.png" alt="Descripción" width="600">
+
+<img src="../assets/images/signals/signal_outage.png" alt="Descripción" width="600">
+
+<img src="../assets/images/signals/signal_w_noise.png" alt="Descripción" width="600">
+
 ### MPU · QRB2210 (Python / Linux)
 
 El microprocesador gestiona todo lo que requiere sistema operativo:
@@ -129,3 +135,7 @@ void current_thread_fn(void*, void*, void*) {
     }
 }
 ```
+
+<img src="../assets/images/demo/dummy_circuit.png" alt="Descripción" width="300">
+
+<img src="../assets/images/demo/osciloscope_fir.png" alt="Descripción" width="300">

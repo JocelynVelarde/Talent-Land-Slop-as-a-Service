@@ -115,6 +115,10 @@ El relay optoacoplado cierra el loop de protección. Cuando la lógica compuesta
 
 ## Diseño físico
 
+<img src="../assets/images/demo/cad_it1.jpeg" alt="Descripción" width="300">
+
+<img src="../assets/images/demo/cad_it1_2.jpeg" alt="Descripción" width="300">
+
 | Especificación       | Detalle                                                            |
 | :------------------- | :----------------------------------------------------------------- |
 | **Grado IP55**       | Caja sellada apta para instalación exterior                        |

@@ -62,9 +62,17 @@ El resultado es un modelo que vive dentro del Arduino, aprende el comportamiento
 | v3      | 63%       | THD como 6ta feature, arquitectura 20→10, auto-weight. Collapse a `flicker` |
 | **v4**  | **99.3%** | Fix bug `fs` hardcodeado + separación agresiva en synth                     |
 
+<img src="../assets/images/features/not_overfitted.png" alt="Descripción" width="600">
+
 {: .warning }
 
 > **Bug crítico resuelto (v2→v4):** el DSP block tenía `fs=6279.8` hardcodeado (sample rate del PicoScope) pero el dataset v2/v3 fue generado a 1000 Hz. Esto rompía el cálculo de RMS ripple y THD completamente. Fix: `fs = 1000.0` hardcodeado, alineado con el parámetro de Edge Impulse.
+
+<img src="../assets/images/features/class_initial.png" alt="Descripción" width="500">
+
+<img src="../assets/images/features/class_prefinal.png" alt="Descripción" width="600">
+
+<img src="../assets/images/features/class_final.png" alt="Descripción" width="600">
 
 ### Dataset
 

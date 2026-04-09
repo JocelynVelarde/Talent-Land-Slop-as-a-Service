@@ -6,7 +6,10 @@ description: "Un nodo inteligente que protege tu hogar antes de que llegue el ap
 permalink: /
 ---
 
+<img src="./assets/branding/logo.png" alt="Descripción" width="100">
+
 # Tecovolt ⚡
+
 {: .fs-9 }
 
 Un nodo inteligente que protege tu hogar antes de que llegue el apagón.
@@ -30,28 +33,30 @@ Tecovolt es un dispositivo embebido instalado junto al tablero eléctrico del ho
 
 ## Tres capacidades integradas
 
-| ⚡ Detecta | 🛡️ Actúa | 📱 Notifica |
-|:-----------|:---------|:------------|
+| ⚡ Detecta                                                                                                    | 🛡️ Actúa                                                                               | 📱 Notifica                                                                        |
+| :------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
 | 3 modelos Edge AI en tiempo real: anomalías de voltaje, riesgo térmico y predicción de demanda. Sin internet. | Relay físico con respuesta < 1ms que protege el transformador local antes del colapso. | Alertas por WhatsApp con instrucciones concretas al usuario en el momento crítico. |
 
 ---
 
 ## Stack tecnológico
 
-| Componente | Tecnología |
-|:-----------|:-----------|
-| **Plataforma** | Arduino Uno Q (Qualcomm) — MCU STM32U585 + MPU QRB2210 |
-| **Edge AI** | Edge Impulse Studio — 3 modelos en paralelo |
+| Componente       | Tecnología                                                 |
+| :--------------- | :--------------------------------------------------------- |
+| **Plataforma**   | Arduino Uno Q (Qualcomm) — MCU STM32U585 + MPU QRB2210     |
+| **Edge AI**      | Edge Impulse Studio — 3 modelos en paralelo                |
 | **Optimización** | Qualcomm AI Hub — Cuantización INT8 + perfilado energético |
-| **Actuación** | Relay físico < 1ms — respuesta autónoma |
-| **Comunicación** | Twilio WhatsApp — alertas bidireccionales |
-| **OTA Updates** | Foundries.io — actualizaciones remotas de modelos |
+| **Actuación**    | Relay físico < 1ms — respuesta autónoma                    |
+| **Comunicación** | Twilio WhatsApp — alertas bidireccionales                  |
+| **OTA Updates**  | Foundries.io — actualizaciones remotas de modelos          |
 
 ---
 
 ## Equipo — Slop as a Service (SAAS)
 
 **Bini Vázquez · Diego Pérez Rossi · Jocelyn Velarde Barrón · Armando Mac Beath**
+
+<img src="./assets/images/team/day1_team_pic.jpeg" alt="Descripción" width="400">
 
 Tecnológico de Monterrey · Monterrey / Puebla / CDMX
 
