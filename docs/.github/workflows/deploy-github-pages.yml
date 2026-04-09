@@ -39,6 +39,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.21"
+          fetch-depth: 0
+          submodules: false
 
       - run: >-
           hugo --baseURL https://${REPO_OWNER}.github.io/${REPO_NAME}
