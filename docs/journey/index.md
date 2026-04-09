@@ -1,141 +1,112 @@
 ---
-title: Arquitectura Técnica
+title: Nuestro Journey
 nav_order: 10
 ---
 
-# Arquitectura Técnica
+# Nuestro Journey
 
 {: .fs-8 }
 
-Diseño dual MCU + MPU, pipeline de datos, stack de software y flujo de operación.
+De la idea a 99.3% accuracy en 72 horas — hitos, bugs, decisiones y lo que aprendimos en el camino.
 {: .fs-5 .fw-300 }
 
 ---
 
-## Principio de diseño
+## ✅ Completado
 
-Un sistema de protección eléctrica **no puede depender de la nube ni tolerar latencias de red.** Cada decisión de diseño parte de ese principio. El dispositivo se instala junto al tablero eléctrico del hogar y opera de forma completamente autónoma, incluso cuando el internet cae junto con la luz.
+### Arquitectura y diseño
 
----
+- Definición de arquitectura MCU/MPU y separación deliberada de responsabilidades
+- Diseño CAD del enclosure con todos los componentes posicionados — listo para impresión 3D
 
-## Arquitectura dual MCU + MPU
+### Calibración de sensores — Día 2
 
-La decisión de diseño más importante es la **separación deliberada de responsabilidades** entre los dos procesadores del Arduino Uno Q:
+- Diagnóstico y fix DC vs AC coupling en ACS712-30A
+- Factor empírico medido: 10.52 mV/A (divisor de voltaje a 3.3V)
+- Sustitución de cable de bajo calibre que generaba caídas de voltaje internas
+- Validación ZMPT101B: 60.02 Hz, crest factor 1.4445
 
-### MCU · STM32U585 (C/C++ / Zephyr RTOS)
+### Captura de datos reales — Día 2
 
-El microcontrolador se dedica exclusivamente a tareas de tiempo real:
+- Dataset de voltaje: CSVs desde PicoScope 7, 6279.8 Hz, ventana 200 ms
+- Dataset de corriente: 48 ventanas reales vía Monitor de Arduino App Lab
+- Valores medidos: rawRMS 0.00 / 42.81 / 87.60 (sin carga / 950 W / 1900 W)
 
-- Muestreo ADC a **1 kHz** (ZMPT101B) y **~2 Hz** (ACS712, thread Zephyr con mutex)
-- Inferencia de **3 modelos en paralelo**
-- Activación del relay físico **< 1ms**
-- Sin red, sin logs, sin OS — latencia cero
+### Pipeline de datos e IA
 
-<img src="../assets/images/signals/signal_normal.png" alt="Descripción" width="600">
+- `tecovolt_synth.py`, `tecovolt_pipeline_v2.py`, `tecovolt_temp_synth.py`, `tecovolt_demand_synth.py`
+- Custom DSP blocks: `tecovolt_block` (6 features + THD) y `tecotemp_block`
+- Fix bug crítico: `fs=6279.8` → `fs=1000.0` en `dsp.py`
 
-<img src="../assets/images/signals/signal_outage.png" alt="Descripción" width="600">
+### Iteraciones del modelo A (voltaje)
 
-<img src="../assets/images/signals/signal_w_noise.png" alt="Descripción" width="600">
+- v1: 94.5% — sintético puro
+- v2: 63.7% — dataset mixto, bug fs detectado
+- v3: 63% — THD agregado, bug aún presente
+- **v4: 99.3%, AUC=1.00 — bug corregido + separación agresiva en synth**
 
-### MPU · QRB2210 (Python / Linux)
+### Software e integración
 
-El microprocesador gestiona todo lo que requiere sistema operativo:
+- Lógica de predicción compuesta en MPU: `deque(maxlen=10)`, umbrales por patrón acumulado
+- Script AWG `tecovolt_demo_awg.py`: secuencia automatizada de ~60 s para el demo
+- Twilio WhatsApp API configurada en el MPU
+- GitHub Actions para gestión automática de labels
 
-- **Lógica de predicción compuesta:** acumula historial de las últimas 10 clasificaciones del MCU y evalúa patrones antes de actuar
-- Logger **SQLite** de eventos históricos
-- Dashboard **Flask** + alertas **Twilio WhatsApp**
-- OTA model updates vía **Foundries.io**
+### Firmware
 
-{: .note }
-
-> Esta separación garantiza que, pase lo que pase en la red, **la respuesta física nunca se bloquee.** Un crash en el MPU no afecta la capacidad del MCU de activar el relay.
-
----
-
-## Lógica de predicción compuesta (MPU)
-
-El relay no actúa en una sola detección. El MPU evalúa patrones acumulados:
-
-```python
-history = deque(maxlen=10)
-
-if history.count('sag_leve') >= 3:   → alerta_amarilla (WhatsApp)
-if history.count('sag_severo') >= 2: → alerta_roja → relay_off
-```
-
-Esto diferencia Tecovolt de un monitor pasivo: actúa de forma **predictiva** — desconecta cargas no críticas para proteger el transformador local antes del colapso total.
+- `tecovolt_voltage_daq.ino`: 200 samples @ 1 kHz, formato `label,s0..s199`
+- `tecovolt_daq.ino`: ACS712 con `delay(600)` y output CSV limpio
+- Fix `Monitor.readStringUntil`: carácter a carácter para `\r\n` o `\r`
+- Fix `dsp-server.py`: guiones en parámetros JSON → underscores
 
 ---
 
-## Stack de software e IA
+## 🔄 En curso
 
-| Herramienta                        | Propósito                                                                                                              |
-| :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Edge Impulse Studio**            | Entrenamiento de los 3 modelos. Custom DSP blocks (`tecovolt_block` con THD, `tecotemp_block`) vía Python/ngrok/Docker |
-| **Qualcomm AI Hub**                | Cuantización INT8 y perfilado energético. Reducción de ~200 KB a ~50 KB por modelo                                     |
-| **Arduino App Lab + Foundries.io** | Entorno oficial de desarrollo para Uno Q. OTA updates en campo                                                         |
-| **Flask + SQLite**                 | Dashboard web histórico en el MPU. Logger de eventos                                                                   |
-| **Twilio WhatsApp API**            | Canal de alertas bidireccional. Notificaciones de riesgo + comandos de relay                                           |
+- Deployment de modelos cuantizados INT8 en el STM32U585
+- Integración MCU ↔ MPU vía RouterBridge
+- Pitch final para el jurado Qualcomm
 
 ---
 
-## Flujo de operación
+## ⬜ Pendiente
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
-│ 1. Entrenamiento│    │ 2. Optimización  │    │ 3. Desarrollo y     │
-│ Edge Impulse    │───▶│ Qualcomm AI Hub  │───▶│    Deploy           │
-│ Studio          │    │                  │    │ Arduino App Lab     │
-│                 │    │ · Cuantización   │    │                     │
-│ · 3 modelos     │    │   INT8           │    │ · C/C++ en MCU      │
-│ · Custom DSP    │    │ · Perfilado de   │    │ · Python en MPU     │
-│ · 99.3% acc.    │    │   potencia       │    │ · Entorno Uno Q     │
-└─────────────────┘    │ · Validación en  │    └──────────┬──────────┘
-                       │   Dragonwing     │               │
-                       └──────────────────┘               ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
-│ 5. Notificación │    │ 4. Actualización │    │   Nodo desplegado   │
-│ Twilio WhatsApp │◀───│ Foundries.io OTA │◀───│                     │
-│                 │    │                  │    │ Evento de riesgo ──▶│
-│ · Alertas       │    │ · Remota         │    │ Comando usuario ◀──│
-│ · Comandos      │    │ · Gestión de     │    │                     │
-│ · Control relay │    │   modelos        │    └─────────────────────┘
-└─────────────────┘    │ · Escalabilidad  │
-                       └──────────────────┘
-```
+- Dashboard Flask funcional en el MPU
+- Logger SQLite de eventos históricos
+- Pruebas end-to-end: sensor → modelo → relay → WhatsApp
+- Optimización final vía Qualcomm AI Hub con datos reales
+- Impresión 3D del enclosure
 
 ---
 
-## Seguridad y robustez
+## Archivos generados
 
-| Especificación    | Detalle                                                                                             |
-| :---------------- | :-------------------------------------------------------------------------------------------------- |
-| **Grado IP55**    | Caja sellada apta para instalación exterior junto al tablero eléctrico                              |
-| **127V aislados** | Zona de alto voltaje físicamente separada del procesador mediante transformadores y optoacopladores |
-| **Enclosure CAD** | Diseñado con todos los componentes posicionados, listo para impresión 3D                            |
+| Archivo                    | Descripción                                                           |
+| :------------------------- | :-------------------------------------------------------------------- |
+| `tecovolt_pipeline_v2.py`  | Pipeline PicoScope 2208B → Edge Impulse. 6 features, augmentation ×50 |
+| `dsp.py`                   | DSP block custom — 6 features + THD, `fs=1000 Hz`                     |
+| `dsp-server.py`            | Servidor HTTP para EI con fix `scale-axes` → underscore               |
+| `tecovolt_demand_synth.py` | Generador sintético de demanda anclado a valores reales               |
+| `tecovolt_capture.py`      | Captura Serial → CSV para modelo de demanda                           |
+| `tecovolt_daq.ino`         | Sketch ACS712 con `delay(600)` y output CSV limpio                    |
+| `tecovolt_voltage_daq.ino` | Sketch ZMPT101B, formato `label,s0..s199`                             |
+| `ei_voltage_train_v3.csv`  | Dataset voltaje: 1440 train, 6 clases                                 |
+| `ei_voltage_test_v3.csv`   | Test set voltaje: 360 muestras reales                                 |
+| `demand_train_final.csv`   | Dataset demanda: 638 train (600 sintéticos + 38 reales)               |
+| `tecovolt_demo_awg.py`     | Automatización AWG PicoScope para demo (~60 s)                        |
 
 ---
 
-## Comunicación serial MCU ↔ MPU
+## Gestión del proyecto
 
-La comunicación entre procesadores ocurre vía **UART serial / Arduino_RouterBridge.h** con un protocolo JSON ligero. El MCU usa `Bridge.provide()` para exponer funciones al MPU. Fix aplicado: lectura carácter a carácter para manejar `\r\n` o `\r` (comportamiento del RouterBridge en Arduino App Lab).
+| Label         | Área                                       |
+| :------------ | :----------------------------------------- |
+| `hardware`    | Ensamblaje físico, circuitos, enclosure    |
+| `firmware`    | Código MCU (C/C++), Zephyr RTOS            |
+| `software`    | Código MPU (Python), Flask, SQLite         |
+| `edge-ai`     | Modelos, Edge Impulse, Qualcomm AI Hub     |
+| `integración` | Pruebas end-to-end, comunicación MCU ↔ MPU |
 
-El patrón de concurrencia en el MCU usa mutex Zephyr para lecturas de sensor en thread dedicado:
+---
 
-```c
-K_MUTEX_DEFINE(current_mutex);
-
-void current_thread_fn(void*, void*, void*) {
-    while(1) {
-        // samplea 1000 veces @ 10kHz, calcula RMS
-        k_mutex_lock(&current_mutex, K_FOREVER);
-        currentRMS = amps;
-        k_mutex_unlock(&current_mutex);
-        k_msleep(500);
-    }
-}
-```
-
-<img src="../assets/images/demo/dummy_circuit.png" alt="Descripción" width="300">
-
-<img src="../assets/images/demo/osciloscope_fir.png" alt="Descripción" width="300">
+[Ver el repositorio completo en GitHub →](https://github.com/JocelynVelarde/Talent-Land-Slop-as-a-Service){: .btn .btn-primary }
