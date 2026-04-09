@@ -1,80 +1,52 @@
-name: Label Issues and Clean Titles
+name: Deploy Tecovolt Docs to GitHub Pages
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/label-issues.yml'
+
+env:
+  REPO_NAME: ${{ github.event.repository.name }}
+  REPO_OWNER: ${{ github.repository_owner }}
 
 jobs:
-  label-and-clean:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-
+  deploy:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - name: Create labels
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          create_label() {
-            local name="$1"
-            local color="$2"
-            local description="$3"
-            gh label create "$name" --color "$color" --description "$description" --repo "$REPO" 2>/dev/null \
-              || gh label edit "$name" --color "$color" --description "$description" --repo "$REPO" 2>/dev/null \
-              || echo "Label '$name' already up to date."
-          }
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false
 
-          create_label "hardware"  "e4e669" "Hardware / physical assembly tasks"
-          create_label "firmware"  "0075ca" "Firmware / MCU code tasks"
-          create_label "software"  "d93f0b" "Software / MPU Python backend tasks"
-          create_label "edge-ai"   "7057ff" "AI / machine learning tasks"
-          create_label "integracion" "0e8a16" "Integration and demo tasks"
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.145.0"
+          extended: true
 
-      - name: Update issues - remove prefix and add labels
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          update_issue() {
-            local issue_number="$1"
-            local label="$2"
-            local new_title="$3"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
 
-            echo "Updating issue #${issue_number}: label='${label}', title='${new_title}'"
-            gh issue edit "$issue_number" \
-              --title "$new_title" \
-              --add-label "$label" \
-              --repo "$REPO"
-          }
+      - run: npm ci
 
-          # Hardware issues [HW-XX]
-          update_issue 2  "hardware" "Validar aislamiento galvanico ZMPT101B"
-          update_issue 3  "hardware" "Validar circuito de bateria LiPo + MT3608"
-          update_issue 4  "hardware" "Prueba de relay optoacoplado con carga de prueba"
-          update_issue 5  "hardware" "Montaje del panel frontal: LED RGB y buzzer"
-          update_issue 6  "hardware" "Prueba de estres termico del enclosure"
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
 
-          # Firmware issues [FW-XX]
-          update_issue 7  "firmware" "Setup del entorno Arduino App Lab para Uno Q"
-          update_issue 8  "firmware" "Loop de muestreo ADC a 1kHz para voltaje y corriente"
-          update_issue 9  "firmware" "Integracion lectura BME280 via I2C"
-          update_issue 10 "firmware" "Exportar e integrar modelos Edge Impulse al MCU"
-          update_issue 11 "firmware" "Implementar maquina de estados de riesgo"
-          update_issue 12 "firmware" "Serializacion JSON MCU a MPU por UART"
+      - run: >-
+          hugo --baseURL https://${REPO_OWNER}.github.io/${REPO_NAME}
+          --minify
 
-          # Software issues [SW-XX]
-          update_issue 13 "software" "Setup del entorno Python en MPU Linux"
-          update_issue 14 "software" "UART reader: parseo del JSON del MCU"
-          update_issue 15 "software" "Logger SQLite de eventos y lecturas"
-          update_issue 16 "software" "Integracion Twilio: envio de alertas por WhatsApp"
-          update_issue 17 "software" "Webhook Flask: recepcion de comandos por WhatsApp"
-          update_issue 18 "software" "Dashboard web historico con Flask"
-
-          # AI issues [AI-XX]
-          update_issue 19 "edge-ai"  "Recoleccion y etiquetado de datos en Edge Impulse"
-          update_issue 20 "edge-ai"  "Entrenamiento Modelo A: anomalia de voltaje K-means"
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

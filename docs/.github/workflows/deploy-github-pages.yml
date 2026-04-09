@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-22.04
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+    defaults:
+      run:
+        working-directory: docs
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +35,7 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+          cache-dependency-path: "docs/package-lock.json"
 
       - run: npm ci
 
@@ -50,3 +53,4 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/public
