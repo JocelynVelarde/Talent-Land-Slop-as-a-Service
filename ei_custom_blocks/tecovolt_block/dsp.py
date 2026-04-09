@@ -1,7 +1,7 @@
 import numpy as np
 
 def generate_features(implementation_version, draw_graphs, raw_data, axes, sampling_freq, scale_axes):
-    fs = 6279.8
+    fs = 1000.0  # hardcoded — dataset generado a 1kHz
     v = np.array(raw_data)
 
     # ── Features de amplitud ─────────────────────────────────────────────────
