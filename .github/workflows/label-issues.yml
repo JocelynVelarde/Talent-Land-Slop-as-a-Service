@@ -15,10 +15,12 @@ jobs:
     runs-on: ubuntu-22.04
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+    defaults:
+      run:
+        working-directory: docs
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           submodules: false
 
       - name: Setup Hugo
@@ -31,8 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
 
       - run: npm ci
 
@@ -50,3 +50,4 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/public
