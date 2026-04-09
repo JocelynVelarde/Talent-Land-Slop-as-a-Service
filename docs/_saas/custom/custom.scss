@@ -1,0 +1,117 @@
+// docs/_sass/custom/custom.scss
+// Overrides específicos de Tecovolt encima del color scheme
+
+// ── Sidebar — borde izquierdo accent ─────────────────────────
+.site-nav {
+  border-right: 1px solid #21262d;
+}
+
+.nav-list .nav-list-item .nav-list-link.active {
+  color: #e20074 !important;
+  font-weight: 600;
+}
+
+.nav-list .nav-list-item .nav-list-link:hover {
+  color: #58a6ff;
+  background-color: rgba(88, 166, 255, 0.08);
+}
+
+// ── Botón primario — rojo Qualcomm ───────────────────────────
+.btn-primary {
+  background-color: #e20074 !important;
+  border-color: #e20074 !important;
+  color: #ffffff !important;
+
+  &:hover {
+    background-color: #b8005d !important;
+    border-color: #b8005d !important;
+  }
+}
+
+// ── Headings con acento sutil ─────────────────────────────────
+h1, h2 {
+  border-bottom: 1px solid #21262d;
+  padding-bottom: 0.3em;
+}
+
+// ── Callout boxes ─────────────────────────────────────────────
+// .note (azul GitHub)
+.callout.info {
+  border-left: 4px solid #58a6ff;
+  background-color: rgba(88, 166, 255, 0.08);
+}
+
+// .warning (Qualcomm magenta)
+.callout.warning {
+  border-left: 4px solid #e20074;
+  background-color: rgba(226, 0, 116, 0.08);
+}
+
+// .progress (verde éxito)
+.callout.progress {
+  border-left: 4px solid #3fb950;
+  background-color: rgba(63, 185, 80, 0.08);
+}
+
+// ── Imágenes — sombra sutil para que floten ───────────────────
+img {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+// ── Código inline — acento magenta ───────────────────────────
+code {
+  color: #ff7bb0;
+  background-color: #161b22;
+  border: 1px solid #21262d;
+}
+
+// ── Tablas — header con tinte Qualcomm ───────────────────────
+table thead {
+  background-color: rgba(226, 0, 116, 0.12);
+}
+
+table thead th {
+  color: #e6edf3;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #161b22;
+}
+
+// ── Logo / branding ───────────────────────────────────────────
+.site-title {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+
+  &:hover {
+    color: #e20074 !important;
+  }
+}
+
+// ── Footer ────────────────────────────────────────────────────
+.site-footer {
+  border-top: 1px solid #21262d;
+  color: #6e7681;
+  font-size: 0.8rem;
+}
+
+// ── Blockquotes (el tagline "No reacciona al apagón...") ──────
+blockquote {
+  border-left: 4px solid #e20074;
+  color: #c9d1d9;
+  background-color: rgba(226, 0, 116, 0.06);
+  padding: 0.8em 1.2em;
+  border-radius: 0 4px 4px 0;
+}
+
+// ── Search ────────────────────────────────────────────────────
+.search-input {
+  border: 1px solid #21262d;
+  background-color: #161b22;
+  color: #c9d1d9;
+
+  &:focus {
+    border-color: #e20074;
+    box-shadow: 0 0 0 3px rgba(226, 0, 116, 0.15);
+  }
+}
