@@ -175,6 +175,10 @@ cd docs && npm install && hugo server
 | 🔧 | Jocelyn Velarde Barrón | Interfaces |
 | 🤖 | Armando Mac Beath | Machine Learning |
 
+## Pitch Deck
+
+Talent Land's Final deck is available at [canva deck](https://canva.link/7u7g7evsr49j3x1)
+
 ## License
 
 MIT
